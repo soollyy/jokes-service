@@ -61,18 +61,18 @@ module.exports = app;
 //TODO:
 //A fully complete GET /jokes route should:
 
-// Return a list of all jokes when no query string parameters are provided
+// Return a list of all jokes when no query string parameters are provided (done)
 
-// Return a list of jokes, filtered by tag for GET /jokes?tag=YOUR_QUERY_HERE
+// Return a list of jokes, filtered by tag for GET /jokes?tag=YOUR_QUERY_HERE (done)
 
-// Return a list of jokes, filtered by content GET /jokes?content=YOUR_QUERY_HERE
+// Return a list of jokes, filtered by content GET /jokes?content=YOUR_QUERY_HERE (done)
 
 
 //EXTENTION:
 
 // Implement one or all of the following routes. Write your process, step by step on each line, dont forget to comment them out ( // )
 
-// POST /jokes: Adds a joke to the database. Should accept both columns in the req.body
+// POST /jokes: Adds a joke to the database. Should accept both columns in the req.body (done)
 
 // DELETE /jokes/:id: Removes a joke from the database, by ID.
 
