@@ -53,3 +53,76 @@ describe("DELETE /jokes/:id", () => {
     expect(deletedJoke).toBeNull(); // Checks that the deleted joke cannot be found, indicating successful deletion
   });
 });
+
+describe("PUT /jokes/:id", () => {
+  beforeAll(async () => {
+    await Joke.sync({ force: true });
+  });
+
+  beforeEach(async () => {
+    await Joke.create({
+      joke: "Why did the chicken cross the road?",
+      tags: "animals, humor",
+    });
+  });
+
+  afterEach(async () => {
+    await Joke.destroy({ where: {} });
+  });
+
+  afterAll(async () => {
+    await Joke.drop();
+  });
+
+  it("should return a 404 status if the joke is not found", async () => {
+    const response = await request(app)
+      .put("/jokes/999")
+      .send({ joke: "Why did the cat cross the road?" });
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ error: "Joke not found" });
+  });
+
+  it("should update the joke by ID and return the updated joke", async () => {
+    const createdJoke = await Joke.findOne({
+      where: { joke: "Why did the chicken cross the road?" },
+    });
+
+    const response = await request(app)
+      .put(`/jokes/${createdJoke.id}`)
+      .send({ joke: "Why did the cat cross the road?" });
+
+    expect(response.status).toBe(200);
+    expect(response.body.joke).toBe("Why did the cat cross the road?");
+    expect(response.body.tags).toBe("animals, humor");
+  });
+
+  it("should update the tags by ID and return the updated joke", async () => {
+    const createdJoke = await Joke.findOne({
+      where: { joke: "Why did the chicken cross the road?" },
+    });
+
+    const response = await request(app)
+      .put(`/jokes/${createdJoke.id}`)
+      .send({ tags: "animals, humor, pets" });
+
+    expect(response.status).toBe(200);
+    expect(response.body.joke).toBe("Why did the chicken cross the road?");
+    expect(response.body.tags).toBe("animals, humor, pets");
+  });
+
+  it("should update both joke and tags by ID and return the updated joke", async () => {
+    const createdJoke = await Joke.findOne({
+      where: { joke: "Why did the chicken cross the road?" },
+    });
+
+    const response = await request(app).put(`/jokes/${createdJoke.id}`).send({
+      joke: "Why did the cat cross the road?",
+      tags: "animals, humor, pets",
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body.joke).toBe("Why did the cat cross the road?");
+    expect(response.body.tags).toBe("animals, humor, pets");
+  });
+});

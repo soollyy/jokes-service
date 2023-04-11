@@ -61,6 +61,28 @@ app.delete("/jokes/:id", async (req, res) => {
   res.status(204).end();
 });
 
+app.put("/jokes/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { joke, tags } = req.body;
+    const jokeToUpdate = await Joke.findOne({ where: { id } });
+    if (!jokeToUpdate) {
+      return res.status(404).send({ error: "Joke not found" });
+    }
+    if (joke) {
+      jokeToUpdate.joke = joke;
+    }
+    if (tags) {
+      jokeToUpdate.tags = tags;
+    }
+    await jokeToUpdate.save();
+    res.status(200).send(jokeToUpdate);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 // we export the app, not listening in here, so that we can run tests
 module.exports = app;
 
@@ -79,9 +101,9 @@ module.exports = app;
 
 // POST /jokes: Adds a joke to the database. Should accept both columns in the req.body (done)
 
-// DELETE /jokes/:id: Removes a joke from the database, by ID.
+// DELETE /jokes/:id: Removes a joke from the database, by ID. (done)
 
-// PUT /jokes/:id: Edits a joke by ID.  Should accept both/either columns in the req.body
+// PUT /jokes/:id: Edits a joke by ID.  Should accept both/either columns in the req.body (done)
 
 //For the DELETE and PUT routes, be sure to send back an error (by calling next) if no joke exists that matches the ID (i.e. if it was previously deleted, or if it was never added.
 
